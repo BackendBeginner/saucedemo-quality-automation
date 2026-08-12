@@ -31,6 +31,10 @@
 - 登入結果 URL 驗證。
 - 登入錯誤訊息驗證。
 - 商品頁標題與商品列表驗證。
+- 補充結帳資料空白欄位驗證。
+- 補充多商品結帳流程。
+- 補充取消結帳流程。
+- 補充訂單完成頁與 Back Home 導航驗證。
 
 ### 測試範圍外
 
@@ -66,6 +70,7 @@
 | TC-INVENTORY-003 | 加入單一商品至購物車 | High | Functional | Automated |
 | TC-INVENTORY-004 | 加入兩項商品至購物車 | High | Functional | Automated |
 | TC-INVENTORY-005 | 開啟購物車並確認商品 | High | Functional | Automated |
+| TC-CHECKOUT-001 | 單一商品完成結帳 | High | End-to-End | Automated |
 
 ## 6. 詳細測試案例
 
@@ -435,6 +440,62 @@ tests/inventory.spec.ts
 tests/inventory.spec.ts
 ```
 
+## 6.2 Checkout 測試案例
+
+
+### TC-CHECKOUT-001：單一商品完成結帳
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-001 |
+| 優先級 | High |
+| 測試類型 | End-to-End / Functional |
+| 前置條件 | 使用者具備正常測試帳號，且商品頁可以正常載入 |
+| 測試資料 | Username: `standard_user`、Password: `secret_sauce` |
+| 商品資料 | Product: `Sauce Labs Backpack` |
+| 結帳資料 | First Name: `Kai`、Last Name: `Cheng`、Zip/Postal Code: `10001` |
+
+#### 測試步驟
+
+1. 開啟 SauceDemo 登入頁面。
+2. 輸入 Username `standard_user`。
+3. 輸入 Password `secret_sauce`。
+4. 點擊 Login 按鈕。
+5. 確認使用者進入商品頁面。
+6. 將 `Sauce Labs Backpack` 加入購物車。
+7. 點擊購物車圖示。
+8. 確認使用者進入購物車頁面。
+9. 確認購物車中包含 `Sauce Labs Backpack`。
+10. 點擊 `Checkout` 按鈕。
+11. 在 First Name 欄位輸入 `Kai`。
+12. 在 Last Name 欄位輸入 `Cheng`。
+13. 在 Zip/Postal Code 欄位輸入 `10001`。
+14. 點擊 `Continue` 按鈕。
+15. 確認使用者進入訂單摘要頁面。
+16. 確認訂單摘要中包含 `Sauce Labs Backpack`。
+17. 點擊 `Finish` 按鈕。
+
+#### 預期結果
+
+- 使用者成功登入並進入 `/inventory.html`。
+- `Sauce Labs Backpack` 成功加入購物車。
+- 購物車數量顯示為 1。
+- 使用者成功進入 `/cart.html`。
+- 購物車頁面顯示 `Sauce Labs Backpack`。
+- 使用者成功進入 `/checkout-step-one.html`。
+- 結帳資料可以成功填寫。
+- 使用者成功進入 `/checkout-step-two.html`。
+- 訂單摘要頁面顯示正確商品。
+- 使用者完成結帳後導向 `/checkout-complete.html`。
+- 頁面顯示 `Thank you for your order!`。
+- 訂單完成頁面不應顯示錯誤訊息。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
 ## 7. 自動化執行方式
 
 ### 執行登入測試
@@ -485,7 +546,8 @@ npx playwright show-report --port 0
 |---|---|---|---:|---:|---:|---|
 | 2026-08-12 | Chromium | Login | 7 | 0 | 0 | 已完成 |
 | 2026-08-12 | Chromium | Inventory | 5 | 0 | 0 | 已完成 |
-| 2026-08-12 | Chromium | All tests | 12 | 0 | 0 | 已完成 |
+| 2026-08-12 | Chromium | Checkout | 1 | 0 | 0 | 已完成 |
+| 2026-08-12 | Chromium | All tests | 13 | 0 | 0 | 已完成 |
 
 ## 9. 風險與後續規劃
 
