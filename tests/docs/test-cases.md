@@ -558,6 +558,7 @@ npx playwright show-report --port 0
 - 完成 InventoryPage Page Object Model。
 - 完成商品列表與購物車自動化測試。
 - 集中管理登入流程與商品頁面操作。
+- 已使用 Playwright fixture 集中管理標準帳號登入前置條件。
 
 ### 後續規劃
 
@@ -565,7 +566,6 @@ npx playwright show-report --port 0
 - 補充結帳資料必填欄位驗證。
 - 補充結帳流程與訂單摘要驗證。
 - 補充 Firefox 與 WebKit 跨瀏覽器測試。
-- 使用 Playwright fixture 集中管理測試帳號與前置條件。
 - 在 GitHub Actions 中自動執行測試並保存 HTML 報告。
 - 分析 `performance_glitch_user` 的頁面載入與登入等待時間。
 - 補充測試失敗時的 trace、screenshot 與 video 分析。
