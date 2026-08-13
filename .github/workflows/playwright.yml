@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
@@ -38,18 +38,20 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test --project=chromium
 
-      - name: Upload Playwright report
+      - name: Upload HTML report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-html-report
           path: playwright-report/
           retention-days: 14
+          if-no-files-found: ignore
 
-      - name: Upload test results
-        if: always()
+      - name: Upload failure artifacts
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: playwright-failure-artifacts
           path: test-results/
           retention-days: 14
+          if-no-files-found: ignore 
