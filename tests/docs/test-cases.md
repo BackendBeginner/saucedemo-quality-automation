@@ -559,13 +559,49 @@ npx playwright show-report --port 0
 - 完成商品列表與購物車自動化測試。
 - 集中管理登入流程與商品頁面操作。
 - 已使用 Playwright fixture 集中管理標準帳號登入前置條件。
+- 已建立 GitHub Actions workflow，自動執行 Chromium 測試並保存 HTML 報告。
 
 ### 後續規劃
 
-- 補充購物車移除商品測試。
+### 優先級一：CI/CD 基礎建設
+
+- 在 GitHub Actions 中自動安裝 dependencies。
+- 自動安裝 Chromium。
+- 自動執行 TypeScript 型別檢查。
+- 自動執行全部 Playwright 測試。
+- 保存 HTML 測試報告。
+- 失敗時保存 trace、screenshot 與 video。
+
+### 優先級二：Checkout 功能覆蓋
+
 - 補充結帳資料必填欄位驗證。
 - 補充結帳流程與訂單摘要驗證。
-- 補充 Firefox 與 WebKit 跨瀏覽器測試。
-- 在 GitHub Actions 中自動執行測試並保存 HTML 報告。
-- 分析 `performance_glitch_user` 的頁面載入與登入等待時間。
-- 補充測試失敗時的 trace、screenshot 與 video 分析。
+- 驗證商品名稱、數量、小計、稅額與總金額。
+- 補充結帳取消流程與訂單完成頁驗證。
+
+### 優先級三：購物車功能覆蓋
+
+- 補充購物車移除單一商品測試。
+- 補充移除全部商品測試。
+- 驗證購物車數量 badge 更新。
+- 驗證購物車為空時的頁面狀態。
+
+### 優先級四：跨瀏覽器測試
+
+- 補充 Firefox 測試。
+- 補充 WebKit 測試。
+- 先執行 Login、Inventory 與 Checkout smoke tests。
+- 再擴展至完整測試套件。
+
+### 優先級五：效能測試
+
+- 分析 `performance_glitch_user` 的頁面載入時間。
+- 記錄登入流程等待時間。
+- 比較 `standard_user` 與 `performance_glitch_user` 的載入差異。
+- 建立可接受的效能基準。
+
+### 優先級六：進階測試整合
+
+- 補充 API 自動化測試。
+- 補充 SQL 資料驗證。
+- 整合 CI/CD 測試報告與部署流程。
