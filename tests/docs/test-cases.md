@@ -78,6 +78,9 @@
 | TC-CHECKOUT-006 | 從結帳資料頁取消結帳 | Medium | Navigation | Automated |
 | TC-CHECKOUT-007 | 從訂單摘要頁取消結帳 | Medium | Navigation | Automated |
 | TC-CHECKOUT-008 | 訂單完成頁與 Back Home 導航 | High | End-to-End | Automated |
+| TC-CART-001 | 從商品頁移除商品 | High | Functional | Automated |
+| TC-CART-002 | 從購物車移除商品 | High | Functional | Automated |
+| TC-CART-003 | 移除唯一商品後購物車為空 | Medium | Functional | Automated |
 
 ## 6. 詳細測試案例
 
@@ -449,6 +452,57 @@ tests/inventory.spec.ts
 
 ## 6.2 Checkout 測試案例
 
+## 6.3 Cart 測試案例
+
+### TC-CART-001：從商品頁移除商品
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CART-001 |
+| 優先級 | High |
+| 測試類型 | Functional |
+| 前置條件 | 使用者已登入商品頁 |
+| 測試資料 | Product: `Sauce Labs Backpack` |
+
+#### 預期結果
+
+- 商品成功加入購物車。
+- 點擊 `Remove` 後商品從購物車移除。
+- 商品按鈕恢復為 `Add to cart`。
+- 購物車 badge 消失。
+
+### TC-CART-002：從購物車移除商品
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CART-002 |
+| 優先級 | High |
+| 測試類型 | Functional |
+| 前置條件 | 購物車中有兩項商品 |
+| 測試資料 | Products: `Sauce Labs Backpack`、`Sauce Labs Bike Light` |
+
+#### 預期結果
+
+- `Sauce Labs Bike Light` 從購物車移除。
+- `Sauce Labs Backpack` 仍然存在。
+- 購物車商品數量從 2 變為 1。
+- 購物車 badge 顯示 1。
+
+### TC-CART-003：移除唯一商品後購物車為空
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CART-003 |
+| 優先級 | Medium |
+| 測試類型 | Functional |
+| 前置條件 | 購物車中有一項商品 |
+| 測試資料 | Product: `Sauce Labs Backpack` |
+
+#### 預期結果
+
+- 商品成功從購物車移除。
+- 購物車沒有商品。
+- 購物車 badge 消失。
 
 ### TC-CHECKOUT-001：單一商品完成結帳
 
@@ -784,7 +838,8 @@ npx playwright show-report --port 0
 | 2026-08-14 | Chromium | Login | 7 | 0 | 0 | 已完成 |
 | 2026-08-14 | Chromium | Inventory | 5 | 0 | 0 | 已完成 |
 | 2026-08-14 | Chromium | Checkout | 8 | 0 | 0 | 已完成 |
-| 2026-08-14 | Chromium | All tests | 20 | 0 | 0 | 已完成 |
+| 2026-08-14 | Chromium | Cart | 3 | 0 | 0 | 已完成 |
+| 2026-08-14 | Chromium | All tests | 23 | 0 | 0 | 已完成 |
 
 ## 9. 風險與後續規劃
 

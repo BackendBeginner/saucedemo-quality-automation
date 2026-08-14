@@ -5,12 +5,15 @@ export class CartPage {
   readonly cartItems: Locator;
   readonly checkoutButton: Locator;
   readonly continueShoppingButton: Locator;
+  readonly cartBadge: Locator;
+
 
   constructor(page: Page) {
     this.page = page;
     this.cartItems = page.locator('.cart_item');
     this.checkoutButton = page.getByRole('button', { name: 'Checkout' });
     this.continueShoppingButton = page.getByRole('button', {name: 'Continue Shopping',});
+    this.cartBadge = page.locator('.shopping_cart_badge');
   }
 
   async expectLoaded() {
@@ -39,4 +42,25 @@ export class CartPage {
   async continueShopping() {
   await this.continueShoppingButton.click();
   }
+
+  async removeProduct(productName: string) {
+  const item = this.item(productName);
+
+  await expect(item).toBeVisible();
+  await item.getByRole('button', { name: 'Remove' }).click();
+}
+
+async expectCartIsEmpty() {
+  await expect(this.cartItems).toHaveCount(0);
+  await expect(this.page.locator('.shopping_cart_badge')).toHaveCount(0);
+}
+
+async expectCartItemCount(count: number) {
+  if (count === 0) {
+    await expect(this.cartBadge).toHaveCount(0);
+    return;
+  }
+
+  await expect(this.cartBadge).toHaveText(String(count));
+}
 }

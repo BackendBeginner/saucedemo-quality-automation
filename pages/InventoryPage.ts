@@ -70,4 +70,19 @@ export class InventoryPage {
   async openCart() {
     await this.cartLink.click();
   }
+
+  async removeProductFromCart(productName: string) {
+  const product = this.product(productName);
+
+  await expect(product).toBeVisible();
+  await product.getByRole('button', { name: 'Remove' }).click();
+}
+
+async expectProductCanBeAdded(productName: string) {
+  const product = this.product(productName);
+
+  await expect(
+    product.getByRole('button', { name: 'Add to cart' }),
+  ).toBeVisible();
+}
 }
