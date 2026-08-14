@@ -9,6 +9,13 @@ export class CheckoutPage {
   readonly finishButton: Locator;
   readonly cancelButton: Locator;
   readonly errorMessage: Locator;
+  readonly backHomeButton: Locator;
+  readonly itemQuantity: Locator;
+  readonly itemTotal: Locator;
+  readonly tax: Locator;
+  readonly total: Locator;
+  readonly completeHeader: Locator;
+  readonly ponyExpressImage: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -18,7 +25,14 @@ export class CheckoutPage {
     this.continueButton = page.getByRole('button', { name: 'Continue' });
     this.finishButton = page.getByRole('button', { name: 'Finish' });
     this.cancelButton = page.getByRole('button', { name: 'Cancel' });
+    this.backHomeButton = page.getByRole('button', { name: 'Back Home'});
     this.errorMessage = page.locator('[data-test="error"]');
+    this.itemQuantity = page.locator('.cart_quantity');
+    this.itemTotal = page.locator('[data-test="subtotal-label"]');
+    this.tax = page.locator('[data-test="tax-label"]');
+    this.total = page.locator('[data-test="total-label"]');
+    this.completeHeader = page.locator('.complete-header');
+    this.ponyExpressImage = page.locator('.pony_express');
   }
 
   async expectInformationPageLoaded() {
@@ -41,6 +55,12 @@ export class CheckoutPage {
   async continueToOverview() {
     await this.continueButton.click();
   }
+
+  async expectInformationError(message: string) {
+  await expect(this.errorMessage).toBeVisible();
+  await expect(this.errorMessage).toContainText(message);
+  await expect(this.page).toHaveURL(/checkout-step-one.html/);
+}
 
   async expectOverviewPageLoaded() {
     await expect(this.page).toHaveURL(/checkout-step-two.html/);
@@ -67,4 +87,41 @@ export class CheckoutPage {
       'Thank you for your order!',
     );
   }
+
+  async expectOverviewDetails(
+  productName: string,
+  quantity: string,
+  subtotal: string,
+  tax: string,
+  total: string,
+) {
+  await expect(this.page).toHaveURL(/checkout-step-two.html/);
+
+  await expect(
+    this.page.locator('.cart_item').filter({
+      has: this.page.getByText(productName, { exact: true }),
+    }),
+  ).toBeVisible();
+
+  await expect(this.itemQuantity).toHaveText(quantity);
+  await expect(this.itemTotal).toHaveText(`Item total: ${subtotal}`);
+  await expect(this.tax).toHaveText(`Tax: ${tax}`);
+  await expect(this.total).toHaveText(`Total: ${total}`);
+}
+
+async cancelCheckout() {
+  await this.cancelButton.click();
+}
+
+async expectOrderCompletePage() {
+  await expect(this.page).toHaveURL(/checkout-complete.html/);
+  await expect(this.completeHeader).toHaveText(
+    'Thank you for your order!',
+  );
+  await expect(this.ponyExpressImage).toBeVisible();
+}
+
+async backHome() {
+  await this.backHomeButton.click();
+}
 }

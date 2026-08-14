@@ -71,6 +71,13 @@
 | TC-INVENTORY-004 | 加入兩項商品至購物車 | High | Functional | Automated |
 | TC-INVENTORY-005 | 開啟購物車並確認商品 | High | Functional | Automated |
 | TC-CHECKOUT-001 | 單一商品完成結帳 | High | End-to-End | Automated |
+| TC-CHECKOUT-002 | 結帳時未填寫 First Name | High | Validation | Automated |
+| TC-CHECKOUT-003 | 結帳時未填寫 Last Name | High | Validation | Automated |
+| TC-CHECKOUT-004 | 結帳時未填寫 Postal Code | High | Validation | Automated |
+| TC-CHECKOUT-005 | 訂單摘要顯示正確商品與金額 | High | Functional | Automated |
+| TC-CHECKOUT-006 | 從結帳資料頁取消結帳 | Medium | Navigation | Automated |
+| TC-CHECKOUT-007 | 從訂單摘要頁取消結帳 | Medium | Navigation | Automated |
+| TC-CHECKOUT-008 | 訂單完成頁與 Back Home 導航 | High | End-to-End | Automated |
 
 ## 6. 詳細測試案例
 
@@ -496,6 +503,236 @@ tests/inventory.spec.ts
 tests/checkout.spec.ts
 ```
 
+### TC-CHECKOUT-002：結帳時未填寫 First Name
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-002 |
+| 優先級 | High |
+| 測試類型 | Validation |
+| 前置條件 | 使用者已登入，且購物車包含商品 |
+| 測試資料 | Last Name: `Cheng`、Zip/Postal Code: `10001` |
+
+#### 測試步驟
+
+1. 登入 SauceDemo。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入購物車並點擊 `Checkout`。
+4. 保持 First Name 空白。
+5. 填寫 Last Name `Cheng`。
+6. 填寫 Zip/Postal Code `10001`。
+7. 點擊 `Continue`。
+
+#### 預期結果
+
+- 使用者仍停留在 `/checkout-step-one.html`。
+- 顯示錯誤訊息：`Error: First Name is required`。
+- 使用者不可進入訂單摘要頁面。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-003：結帳時未填寫 Last Name
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-003 |
+| 優先級 | High |
+| 測試類型 | Validation |
+| 前置條件 | 使用者已登入，且購物車包含商品 |
+| 測試資料 | First Name: `Kai`、Zip/Postal Code: `10001` |
+
+#### 測試步驟
+
+1. 登入 SauceDemo。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入購物車並點擊 `Checkout`。
+4. 填寫 First Name `Kai`。
+5. 保持 Last Name 空白。
+6. 填寫 Zip/Postal Code `10001`。
+7. 點擊 `Continue`。
+
+#### 預期結果
+
+- 使用者仍停留在 `/checkout-step-one.html`。
+- 顯示錯誤訊息：`Error: Last Name is required`。
+- 使用者不可進入訂單摘要頁面。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-004：結帳時未填寫 Postal Code
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-004 |
+| 優先級 | High |
+| 測試類型 | Validation |
+| 前置條件 | 使用者已登入，且購物車包含商品 |
+| 測試資料 | First Name: `Kai`、Last Name: `Cheng` |
+
+#### 測試步驟
+
+1. 登入 SauceDemo。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入購物車並點擊 `Checkout`。
+4. 填寫 First Name `Kai`。
+5. 填寫 Last Name `Cheng`。
+6. 保持 Zip/Postal Code 空白。
+7. 點擊 `Continue`。
+
+#### 預期結果
+
+- 使用者仍停留在 `/checkout-step-one.html`。
+- 顯示錯誤訊息：`Error: Postal Code is required`。
+- 使用者不可進入訂單摘要頁面。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-005：訂單摘要顯示正確商品與金額
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-005 |
+| 優先級 | High |
+| 測試類型 | Functional / Calculation |
+| 前置條件 | 使用者已登入，且購物車包含一項商品 |
+| 測試資料 | Product: `Sauce Labs Backpack` |
+| 預期金額 | Item total: `$29.99`、Tax: `$2.40`、Total: `$32.39` |
+
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入購物車並點擊 `Checkout`。
+4. 填寫 First Name、Last Name 與 Zip/Postal Code。
+5. 點擊 `Continue` 進入訂單摘要頁。
+6. 驗證商品名稱與商品數量。
+7. 驗證 Item total、Tax 與 Total。
+
+#### 預期結果
+
+- 商品名稱為 `Sauce Labs Backpack`。
+- 商品數量為 1。
+- Item total 為 `$29.99`。
+- Tax 為 `$2.40`。
+- Total 為 `$32.39`。
+- Total 等於 Item total 加上 Tax。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-006：從結帳資料頁取消結帳
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-006 |
+| 優先級 | Medium |
+| 測試類型 | Navigation |
+| 前置條件 | 使用者已進入 Checkout Information 頁面 |
+| 測試資料 | Product: `Sauce Labs Backpack` |
+
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入購物車並點擊 `Checkout`。
+4. 確認進入 Checkout Information 頁面。
+5. 點擊 `Cancel`。
+
+#### 預期結果
+
+- 使用者返回 `/cart.html`。
+- 購物車頁面正常顯示。
+- 購物車仍包含 `Sauce Labs Backpack`。
+- 使用者未進入訂單摘要頁面。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-007：從訂單摘要頁取消結帳
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-007 |
+| 優先級 | Medium |
+| 測試類型 | Navigation |
+| 前置條件 | 使用者已進入 Checkout Overview 頁面 |
+| 測試資料 | Product: `Sauce Labs Backpack` |
+
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入 Checkout Information 頁面。
+4. 填寫完整結帳資料。
+5. 點擊 `Continue` 進入訂單摘要頁。
+6. 點擊 `Cancel`。
+
+#### 預期結果
+
+- 使用者返回 `/inventory.html`。
+- 頁面顯示 `Products`。
+- 使用者未完成訂單。
+- 不應顯示訂單完成訊息。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-008：訂單完成頁與 Back Home 導航
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-008 |
+| 優先級 | High |
+| 測試類型 | End-to-End / Navigation |
+| 前置條件 | 使用者已登入，且購物車包含商品 |
+| 測試資料 | Product: `Sauce Labs Backpack` |
+
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入購物車並點擊 `Checkout`。
+4. 填寫完整結帳資料。
+5. 點擊 `Continue` 進入訂單摘要頁。
+6. 點擊 `Finish`。
+7. 驗證訂單完成頁。
+8. 點擊 `Back Home`。
+
+#### 預期結果
+
+- 使用者導向 `/checkout-complete.html`。
+- 頁面顯示 `Thank you for your order!`。
+- 訂單完成頁正常顯示。
+- 點擊 `Back Home` 後返回 `/inventory.html`。
+- 商品頁顯示 `Products`。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
 ## 7. 自動化執行方式
 
 ### 執行登入測試
@@ -544,10 +781,10 @@ npx playwright show-report --port 0
 
 | 執行日期 | 瀏覽器 | 測試範圍 | 通過 | 失敗 | 跳過 | 備註 |
 |---|---|---|---:|---:|---:|---|
-| 2026-08-12 | Chromium | Login | 7 | 0 | 0 | 已完成 |
-| 2026-08-12 | Chromium | Inventory | 5 | 0 | 0 | 已完成 |
-| 2026-08-12 | Chromium | Checkout | 1 | 0 | 0 | 已完成 |
-| 2026-08-12 | Chromium | All tests | 13 | 0 | 0 | 已完成 |
+| 2026-08-14 | Chromium | Login | 7 | 0 | 0 | 已完成 |
+| 2026-08-14 | Chromium | Inventory | 5 | 0 | 0 | 已完成 |
+| 2026-08-14 | Chromium | Checkout | 8 | 0 | 0 | 已完成 |
+| 2026-08-14 | Chromium | All tests | 20 | 0 | 0 | 已完成 |
 
 ## 9. 風險與後續規劃
 
@@ -556,52 +793,23 @@ npx playwright show-report --port 0
 - 完成 Login 登入測試案例。
 - 完成 LoginPage Page Object Model 重構。
 - 完成 InventoryPage Page Object Model。
+- 完成 CartPage 與 CheckoutPage Page Object Model。
 - 完成商品列表與購物車自動化測試。
-- 集中管理登入流程與商品頁面操作。
-- 已使用 Playwright fixture 集中管理標準帳號登入前置條件。
-- 已建立 GitHub Actions workflow，自動執行 Chromium 測試並保存 HTML 報告。
+- 完成 Checkout 結帳流程測試。
+- 完成結帳資料必填欄位驗證。
+- 完成訂單摘要商品與金額驗證。
+- 完成結帳取消流程驗證。
+- 完成訂單完成頁與 Back Home 導航驗證。
+- 使用 Playwright fixture 集中管理標準帳號登入前置條件。
+- 建立 GitHub Actions，自動執行 Chromium 測試並保存 HTML 報告。
+- 設定失敗時保存 trace、screenshot 與 video。
 
 ### 後續規劃
 
-### 優先級一：CI/CD 基礎建設
-
-- 在 GitHub Actions 中自動安裝 dependencies。
-- 自動安裝 Chromium。
-- 自動執行 TypeScript 型別檢查。
-- 自動執行全部 Playwright 測試。
-- 保存 HTML 測試報告。
-- 失敗時保存 trace、screenshot 與 video。
-
-### 優先級二：Checkout 功能覆蓋
-
-- 補充結帳資料必填欄位驗證。
-- 補充結帳流程與訂單摘要驗證。
-- 驗證商品名稱、數量、小計、稅額與總金額。
-- 補充結帳取消流程與訂單完成頁驗證。
-
-### 優先級三：購物車功能覆蓋
-
-- 補充購物車移除單一商品測試。
-- 補充移除全部商品測試。
-- 驗證購物車數量 badge 更新。
-- 驗證購物車為空時的頁面狀態。
-
-### 優先級四：跨瀏覽器測試
-
-- 補充 Firefox 測試。
-- 補充 WebKit 測試。
-- 先執行 Login、Inventory 與 Checkout smoke tests。
-- 再擴展至完整測試套件。
-
-### 優先級五：效能測試
-
-- 分析 `performance_glitch_user` 的頁面載入時間。
-- 記錄登入流程等待時間。
-- 比較 `standard_user` 與 `performance_glitch_user` 的載入差異。
-- 建立可接受的效能基準。
-
-### 優先級六：進階測試整合
-
+- 補充購物車移除商品測試。
+- 補充多商品結帳流程。
+- 補充 Firefox 與 WebKit 跨瀏覽器測試。
+- 分析 `performance_glitch_user` 的頁面載入與登入等待時間。
 - 補充 API 自動化測試。
 - 補充 SQL 資料驗證。
 - 整合 CI/CD 測試報告與部署流程。
