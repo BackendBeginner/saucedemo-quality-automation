@@ -10,7 +10,7 @@
 | 測試模組 | Login 登入功能 |
 | 測試類型 | UI 自動化測試、功能測試、負向測試 |
 | 自動化工具 | Playwright + TypeScript |
-| 測試環境 | Chromium |
+| 測試環境 | Chromium、Firefox、WebKit |
 | 測試網址 | https://www.saucedemo.com/ |
 | 文件版本 | v1.0 |
 
@@ -464,12 +464,26 @@ tests/inventory.spec.ts
 | 前置條件 | 使用者已登入商品頁 |
 | 測試資料 | Product: `Sauce Labs Backpack` |
 
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 確認購物車 badge 顯示 1。
+4. 點擊該商品的 `Remove` 按鈕。
+5. 查看商品按鈕與購物車 badge。
+
 #### 預期結果
 
 - 商品成功加入購物車。
 - 點擊 `Remove` 後商品從購物車移除。
 - 商品按鈕恢復為 `Add to cart`。
 - 購物車 badge 消失。
+
+#### 自動化腳本
+
+```text
+tests/cart.spec.ts
+```
 
 ### TC-CART-002：從購物車移除商品
 
@@ -481,12 +495,27 @@ tests/inventory.spec.ts
 | 前置條件 | 購物車中有兩項商品 |
 | 測試資料 | Products: `Sauce Labs Backpack`、`Sauce Labs Bike Light` |
 
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 將 `Sauce Labs Bike Light` 加入購物車。
+4. 開啟購物車。
+5. 點擊 `Sauce Labs Bike Light` 的 `Remove` 按鈕。
+6. 查看購物車商品與 badge。
+
 #### 預期結果
 
 - `Sauce Labs Bike Light` 從購物車移除。
 - `Sauce Labs Backpack` 仍然存在。
 - 購物車商品數量從 2 變為 1。
 - 購物車 badge 顯示 1。
+
+#### 自動化腳本
+
+```text
+tests/cart.spec.ts
+```
 
 ### TC-CART-003：移除唯一商品後購物車為空
 
@@ -498,11 +527,25 @@ tests/inventory.spec.ts
 | 前置條件 | 購物車中有一項商品 |
 | 測試資料 | Product: `Sauce Labs Backpack` |
 
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 開啟購物車。
+4. 點擊商品的 `Remove` 按鈕。
+5. 查看購物車內容與 badge。
+
 #### 預期結果
 
 - 商品成功從購物車移除。
 - 購物車沒有商品。
 - 購物車 badge 消失。
+
+#### 自動化腳本
+
+```text
+tests/cart.spec.ts
+```
 
 ### TC-CHECKOUT-001：單一商品完成結帳
 
@@ -789,28 +832,50 @@ tests/checkout.spec.ts
 
 ## 7. 自動化執行方式
 
-### 執行登入測試
+### 執行 Login 測試
 
 ```bash
-npx playwright test tests/login.spec.ts --project=chromium
+npx playwright test tests/login.spec.ts --project=chromium --workers=2
 ```
 
-### 執行商品與購物車測試
+### 執行 Inventory 測試
 
 ```bash
-npx playwright test tests/inventory.spec.ts --project=chromium
+npx playwright test tests/inventory.spec.ts --project=chromium --workers=2
 ```
 
-### 執行全部測試
+### 執行 Cart 測試
 
 ```bash
-npx playwright test --project=chromium
+npx playwright test tests/cart.spec.ts --project=chromium --workers=2
 ```
 
-### 以有頭模式執行全部測試
+### 執行 Checkout 測試
 
 ```bash
-npx playwright test --project=chromium --headed
+npx playwright test tests/checkout.spec.ts --project=chromium --workers=2
+```
+
+### 執行 Chromium 全部測試
+
+```bash
+npx playwright test --project=chromium --workers=2
+```
+
+### 執行三個瀏覽器全部測試
+
+```bash
+npx playwright test \
+  --project=chromium \
+  --project=firefox \
+  --project=webkit \
+  --workers=2
+```
+
+### TypeScript 型別檢查
+
+```bash
+npx tsc -p tsconfig.json --noEmit
 ```
 
 ### 使用 Playwright Inspector 除錯
@@ -828,43 +893,47 @@ npx playwright test --list
 ### 開啟 HTML 測試報告
 
 ```bash
-npx playwright show-report --port 0
+npx playwright show-report playwright-report
 ```
 
 ## 8. 測試結果紀錄
 
-| 執行日期 | 瀏覽器 | 測試範圍 | 通過 | 失敗 | 跳過 | 備註 |
-|---|---|---|---:|---:|---:|---|
-| 2026-08-14 | Chromium | Login | 7 | 0 | 0 | 已完成 |
-| 2026-08-14 | Chromium | Inventory | 5 | 0 | 0 | 已完成 |
-| 2026-08-14 | Chromium | Checkout | 8 | 0 | 0 | 已完成 |
-| 2026-08-14 | Chromium | Cart | 3 | 0 | 0 | 已完成 |
-| 2026-08-14 | Chromium | All tests | 23 | 0 | 0 | 已完成 |
+| 執行日期 | 瀏覽器 | 測試範圍 | 通過 | 失敗 | 跳過 | Flaky | 備註 |
+|---|---|---|---:|---:|---:|---:|---|
+| 2026-08-15 | Chromium | All tests | 23 | 0 | 0 | 0 | workers=2，已完成 |
+| 2026-08-15 | Firefox | All tests | 23 | 0 | 0 | 0 | workers=2，已完成 |
+| 2026-08-15 | WebKit | All tests | 23 | 0 | 0 | 0 | workers=2，已完成 |
+| 2026-08-15 | All browsers | All tests | 69 | 0 | 0 | 0 | workers=2，已完成 |
 
 ## 9. 風險與後續規劃
 
 ### 已完成
 
 - 完成 Login 登入測試案例。
-- 完成 LoginPage Page Object Model 重構。
-- 完成 InventoryPage Page Object Model。
-- 完成 CartPage 與 CheckoutPage Page Object Model。
-- 完成商品列表與購物車自動化測試。
-- 完成 Checkout 結帳流程測試。
-- 完成結帳資料必填欄位驗證。
-- 完成訂單摘要商品與金額驗證。
+- 完成 LoginPage、InventoryPage、CartPage 與 CheckoutPage。
+- 完成 Playwright fixture 登入前置流程。
+- 完成商品列表、排序與購物車新增／移除測試。
+- 完成結帳流程與結帳資料必填欄位驗證。
+- 完成訂單摘要商品、數量、小計、稅額與總金額驗證。
 - 完成結帳取消流程驗證。
 - 完成訂單完成頁與 Back Home 導航驗證。
-- 使用 Playwright fixture 集中管理標準帳號登入前置條件。
-- 建立 GitHub Actions，自動執行 Chromium 測試並保存 HTML 報告。
-- 設定失敗時保存 trace、screenshot 與 video。
+- 啟用 Chromium、Firefox 與 WebKit 跨瀏覽器測試。
+- 建立 GitHub Actions CI。
+- 保存 HTML report、trace、screenshot 與 video。
+- 設定每個失敗測試重試一次。
+- 使用 workers=2 執行三個瀏覽器的完整測試。
+
+### 風險
+
+- 高平行度執行時，登入頁初始載入偶爾可能出現 flaky。
+- 目前透過每個失敗案例 retry 一次降低偶發環境錯誤的影響。
+- SauceDemo 為外部測試網站，網路或服務狀態可能影響測試結果。
 
 ### 後續規劃
 
-- 補充購物車移除商品測試。
-- 補充多商品結帳流程。
-- 補充 Firefox 與 WebKit 跨瀏覽器測試。
 - 分析 `performance_glitch_user` 的頁面載入與登入等待時間。
+- 補充多商品結帳流程。
 - 補充 API 自動化測試。
 - 補充 SQL 資料驗證。
 - 整合 CI/CD 測試報告與部署流程。
+- 建立跨瀏覽器 flaky rate 趨勢追蹤。

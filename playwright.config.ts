@@ -7,10 +7,10 @@ export default defineConfig({
 
   forbidOnly: !!process.env.CI,
 
-  retries: process.env.CI ? 2 : 0,
+  retries: 1,
 
-  workers: process.env.CI ? 1 : undefined,
-
+  workers: 2,
+  
   timeout: 30_000,
 
   expect: {
@@ -54,14 +54,18 @@ export default defineConfig({
     },
 
     // 後續需要跨瀏覽器時再取消註解
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
+    {
+      name: 'firefox',
+      use: {
+        ...devices['Desktop Firefox'],
+        navigationTimeout: 60_000,
+      },
+      timeout: 60_000,
+    },
 
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
   ],
 });

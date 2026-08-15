@@ -105,17 +105,28 @@ test.describe('SauceDemo Login', () => {
   });
 
   test('TC-LOGIN-007: performance glitch user can login successfully', async ({
-    page,
-  }) => {
-    const loginPage = new LoginPage(page);
+  page,
+}) => {
+  test.setTimeout(60_000);
 
-    test.setTimeout(15_000);
+  const loginPage = new LoginPage(page);
+  const start = Date.now();
 
-    await loginPage.open();
-    await loginPage.login(
-      USERS.performanceGlitch.username,
-      USERS.performanceGlitch.password,
-    );
-    await loginPage.expectLoginSuccess();
-  });
+  await loginPage.open();
+
+  await loginPage.login(
+    USERS.performanceGlitch.username,
+    USERS.performanceGlitch.password,
+  );
+
+  await loginPage.expectLoginSuccess();
+
+  const totalDuration = Date.now() - start;
+
+  console.log(
+    `performance_glitch_user total flow duration: ${totalDuration}ms`,
+  );
+
+  test.expect(totalDuration).toBeLessThan(15_000);
+});
 });

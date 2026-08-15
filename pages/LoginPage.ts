@@ -8,16 +8,31 @@ export class LoginPage {
   readonly errorMessage: Locator;
 
   constructor(page: Page) {
-    this.page = page;
-    this.usernameInput = page.getByPlaceholder('Username');
-    this.passwordInput = page.getByPlaceholder('Password');
-    this.loginButton = page.getByRole('button', { name: 'Login' });
-    this.errorMessage = page.locator('[data-test="error"]');
-  }
+  this.page = page;
+  this.usernameInput = page.locator('[data-test="username"]');
+  this.passwordInput = page.locator('[data-test="password"]');
+  this.loginButton = page.locator('[data-test="login-button"]');
+  this.errorMessage = page.locator('[data-test="error"]');
+}
 
   async open() {
-    await this.page.goto('/');
-  }
+  await this.page.goto('/', {
+    waitUntil: 'commit',
+    timeout: 30_000,
+  });
+
+  await expect(this.usernameInput).toBeVisible({
+    timeout: 30_000,
+  });
+
+  await expect(this.passwordInput).toBeVisible({
+    timeout: 30_000,
+  });
+
+  await expect(this.loginButton).toBeVisible({
+    timeout: 30_000,
+  });
+}
 
   async login(username: string, password: string) {
     await this.usernameInput.fill(username);
