@@ -220,4 +220,47 @@ test('TC-CHECKOUT-008: order completion page supports Back Home', async ({
   await page.waitForURL(/inventory.html/);
   await page.getByText('Products').waitFor();
 });
+
+test('TC-CHECKOUT-009: user can complete checkout with multiple products', async ({
+  page,
+  inventoryPage,
+}) => {
+  const cartPage = new CartPage(page);
+  const checkoutPage = new CheckoutPage(page);
+
+  await inventoryPage.expectLoaded();
+
+  await inventoryPage.addProductToCart('Sauce Labs Backpack');
+  await inventoryPage.addProductToCart('Sauce Labs Bike Light');
+  await inventoryPage.expectCartItemCount(2);
+  await inventoryPage.openCart();
+
+  await cartPage.expectLoaded();
+  await cartPage.expectItemCount(2);
+  await cartPage.expectItemVisible('Sauce Labs Backpack');
+  await cartPage.expectItemVisible('Sauce Labs Bike Light');
+  await cartPage.checkout();
+
+  await checkoutPage.expectInformationPageLoaded();
+  await checkoutPage.fillCustomerInformation(
+    'Kai',
+    'Cheng',
+    '10001',
+  );
+  await checkoutPage.continueToOverview();
+
+  await checkoutPage.expectOverviewProducts([
+    'Sauce Labs Backpack',
+    'Sauce Labs Bike Light',
+  ]);
+
+  await checkoutPage.expectOverviewAmounts(
+    '$39.98',
+    '$3.20',
+    '$43.18',
+  );
+
+  await checkoutPage.finishOrder();
+  await checkoutPage.expectOrderCompletePage();
+});
 });

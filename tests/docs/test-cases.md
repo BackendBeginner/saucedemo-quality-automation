@@ -78,6 +78,7 @@
 | TC-CHECKOUT-006 | 從結帳資料頁取消結帳 | Medium | Navigation | Automated |
 | TC-CHECKOUT-007 | 從訂單摘要頁取消結帳 | Medium | Navigation | Automated |
 | TC-CHECKOUT-008 | 訂單完成頁與 Back Home 導航 | High | End-to-End | Automated |
+| TC-CHECKOUT-009 | 多商品完成結帳 | High | End-to-End | Automated |
 | TC-CART-001 | 從商品頁移除商品 | High | Functional | Automated |
 | TC-CART-002 | 從購物車移除商品 | High | Functional | Automated |
 | TC-CART-003 | 移除唯一商品後購物車為空 | Medium | Functional | Automated |
@@ -451,6 +452,349 @@ tests/inventory.spec.ts
 ```
 
 ## 6.2 Checkout 測試案例
+
+### TC-CHECKOUT-001：單一商品完成結帳
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-001 |
+| 優先級 | High |
+| 測試類型 | End-to-End / Functional |
+| 前置條件 | 使用者具備正常測試帳號，且商品頁可以正常載入 |
+| 測試資料 | Username: `standard_user`、Password: `secret_sauce` |
+| 商品資料 | Product: `Sauce Labs Backpack` |
+| 結帳資料 | First Name: `Kai`、Last Name: `Cheng`、Zip/Postal Code: `10001` |
+
+#### 測試步驟
+
+1. 開啟 SauceDemo 登入頁面。
+2. 輸入 Username `standard_user`。
+3. 輸入 Password `secret_sauce`。
+4. 點擊 `Login` 按鈕。
+5. 確認使用者進入商品頁面。
+6. 將 `Sauce Labs Backpack` 加入購物車。
+7. 點擊購物車圖示。
+8. 確認使用者進入購物車頁面。
+9. 確認購物車中包含 `Sauce Labs Backpack`。
+10. 點擊 `Checkout` 按鈕。
+11. 在 First Name 欄位輸入 `Kai`。
+12. 在 Last Name 欄位輸入 `Cheng`。
+13. 在 Zip/Postal Code 欄位輸入 `10001`。
+14. 點擊 `Continue` 按鈕。
+15. 確認使用者進入訂單摘要頁面。
+16. 確認訂單摘要中包含 `Sauce Labs Backpack`。
+17. 點擊 `Finish` 按鈕。
+
+#### 預期結果
+
+- 使用者成功登入並進入 `/inventory.html`。
+- `Sauce Labs Backpack` 成功加入購物車。
+- 購物車數量顯示為 1。
+- 使用者成功進入 `/cart.html`。
+- 購物車頁面顯示 `Sauce Labs Backpack`。
+- 使用者成功進入 `/checkout-step-one.html`。
+- 結帳資料可以成功填寫。
+- 使用者成功進入 `/checkout-step-two.html`。
+- 訂單摘要頁面顯示正確商品。
+- 使用者完成結帳後導向 `/checkout-complete.html`。
+- 頁面顯示 `Thank you for your order!`。
+- 訂單完成頁面不顯示錯誤訊息。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-002：結帳時未填寫 First Name
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-002 |
+| 優先級 | High |
+| 測試類型 | Validation |
+| 前置條件 | 使用者已登入，且購物車包含商品 |
+| 測試資料 | Product: `Sauce Labs Backpack` |
+| 結帳資料 | Last Name: `Cheng`、Zip/Postal Code: `10001` |
+
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入購物車並點擊 `Checkout`。
+4. 保持 First Name 欄位空白。
+5. 在 Last Name 欄位輸入 `Cheng`。
+6. 在 Zip/Postal Code 欄位輸入 `10001`。
+7. 點擊 `Continue` 按鈕。
+
+#### 預期結果
+
+- 使用者仍停留在 `/checkout-step-one.html`。
+- 顯示錯誤訊息：`Error: First Name is required`。
+- 使用者不可進入訂單摘要頁面。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-003：結帳時未填寫 Last Name
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-003 |
+| 優先級 | High |
+| 測試類型 | Validation |
+| 前置條件 | 使用者已登入，且購物車包含商品 |
+| 測試資料 | Product: `Sauce Labs Backpack` |
+| 結帳資料 | First Name: `Kai`、Zip/Postal Code: `10001` |
+
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入購物車並點擊 `Checkout`。
+4. 在 First Name 欄位輸入 `Kai`。
+5. 保持 Last Name 欄位空白。
+6. 在 Zip/Postal Code 欄位輸入 `10001`。
+7. 點擊 `Continue` 按鈕。
+
+#### 預期結果
+
+- 使用者仍停留在 `/checkout-step-one.html`。
+- 顯示錯誤訊息：`Error: Last Name is required`。
+- 使用者不可進入訂單摘要頁面。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-004：結帳時未填寫 Postal Code
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-004 |
+| 優先級 | High |
+| 測試類型 | Validation |
+| 前置條件 | 使用者已登入，且購物車包含商品 |
+| 測試資料 | Product: `Sauce Labs Backpack` |
+| 結帳資料 | First Name: `Kai`、Last Name: `Cheng` |
+
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入購物車並點擊 `Checkout`。
+4. 在 First Name 欄位輸入 `Kai`。
+5. 在 Last Name 欄位輸入 `Cheng`。
+6. 保持 Zip/Postal Code 欄位空白。
+7. 點擊 `Continue` 按鈕。
+
+#### 預期結果
+
+- 使用者仍停留在 `/checkout-step-one.html`。
+- 顯示錯誤訊息：`Error: Postal Code is required`。
+- 使用者不可進入訂單摘要頁面。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-005：訂單摘要顯示正確商品與金額
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-005 |
+| 優先級 | High |
+| 測試類型 | Functional / Calculation |
+| 前置條件 | 使用者已登入，且購物車包含一項商品 |
+| 測試資料 | Product: `Sauce Labs Backpack` |
+| 結帳資料 | First Name: `Kai`、Last Name: `Cheng`、Zip/Postal Code: `10001` |
+| 預期金額 | Item total: `$29.99`、Tax: `$2.40`、Total: `$32.39` |
+
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入購物車並點擊 `Checkout`。
+4. 填寫 First Name、Last Name 與 Zip/Postal Code。
+5. 點擊 `Continue` 進入訂單摘要頁。
+6. 驗證商品名稱與商品數量。
+7. 驗證 Item total、Tax 與 Total。
+
+#### 預期結果
+
+- 商品名稱為 `Sauce Labs Backpack`。
+- 商品數量為 1。
+- Item total 為 `$29.99`。
+- Tax 為 `$2.40`。
+- Total 為 `$32.39`。
+- Total 等於 Item total 加上 Tax。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-006：從結帳資料頁取消結帳
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-006 |
+| 優先級 | Medium |
+| 測試類型 | Navigation |
+| 前置條件 | 使用者已進入 Checkout Information 頁面 |
+| 測試資料 | Product: `Sauce Labs Backpack` |
+
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入購物車並點擊 `Checkout`。
+4. 確認進入 Checkout Information 頁面。
+5. 點擊 `Cancel` 按鈕。
+
+#### 預期結果
+
+- 使用者返回 `/cart.html`。
+- 購物車頁面正常顯示。
+- 購物車仍包含 `Sauce Labs Backpack`。
+- 使用者未進入訂單摘要頁面。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-007：從訂單摘要頁取消結帳
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-007 |
+| 優先級 | Medium |
+| 測試類型 | Navigation |
+| 前置條件 | 使用者已進入 Checkout Overview 頁面 |
+| 測試資料 | Product: `Sauce Labs Backpack` |
+| 結帳資料 | First Name: `Kai`、Last Name: `Cheng`、Zip/Postal Code: `10001` |
+
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入購物車並點擊 `Checkout`。
+4. 填寫完整結帳資料。
+5. 點擊 `Continue` 進入訂單摘要頁。
+6. 點擊 `Cancel` 按鈕。
+
+#### 預期結果
+
+- 使用者返回 `/inventory.html`。
+- 頁面顯示 `Products`。
+- 使用者未完成訂單。
+- 不應顯示訂單完成訊息。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-008：訂單完成頁與 Back Home 導航
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-008 |
+| 優先級 | High |
+| 測試類型 | End-to-End / Navigation |
+| 前置條件 | 使用者已登入，且購物車包含商品 |
+| 測試資料 | Product: `Sauce Labs Backpack` |
+| 結帳資料 | First Name: `Kai`、Last Name: `Cheng`、Zip/Postal Code: `10001` |
+
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 進入購物車並點擊 `Checkout`。
+4. 填寫完整結帳資料。
+5. 點擊 `Continue` 進入訂單摘要頁。
+6. 點擊 `Finish`。
+7. 驗證訂單完成頁。
+8. 點擊 `Back Home` 按鈕。
+
+#### 預期結果
+
+- 使用者導向 `/checkout-complete.html`。
+- 頁面顯示 `Thank you for your order!`。
+- 訂單完成頁正常顯示。
+- 點擊 `Back Home` 後返回 `/inventory.html`。
+- 商品頁顯示 `Products`。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
+
+### TC-CHECKOUT-009：多商品完成結帳
+
+| 項目 | 內容 |
+|---|---|
+| 測試案例 ID | TC-CHECKOUT-009 |
+| 優先級 | High |
+| 測試類型 | End-to-End / Calculation |
+| 前置條件 | 使用者已登入商品頁面 |
+| 測試資料 | Products: `Sauce Labs Backpack`、`Sauce Labs Bike Light` |
+| 結帳資料 | First Name: `Kai`、Last Name: `Cheng`、Zip/Postal Code: `10001` |
+| 預期小計 | `$39.98` |
+| 預期稅額 | `$3.20` |
+| 預期總額 | `$43.18` |
+
+#### 測試步驟
+
+1. 使用 `standard_user` 登入。
+2. 將 `Sauce Labs Backpack` 加入購物車。
+3. 將 `Sauce Labs Bike Light` 加入購物車。
+4. 確認購物車數量為 2。
+5. 開啟購物車。
+6. 確認兩項商品都顯示。
+7. 點擊 `Checkout` 按鈕。
+8. 填寫 First Name `Kai`。
+9. 填寫 Last Name `Cheng`。
+10. 填寫 Zip/Postal Code `10001`。
+11. 點擊 `Continue` 按鈕。
+12. 確認訂單摘要包含兩項商品。
+13. 驗證商品數量為 2。
+14. 驗證 Item total 為 `$39.98`。
+15. 驗證 Tax 為 `$3.20`。
+16. 驗證 Total 為 `$43.18`。
+17. 點擊 `Finish` 按鈕。
+
+#### 預期結果
+
+- 兩項商品成功加入購物車。
+- 購物車數量顯示為 2。
+- Checkout Information 頁面可正常填寫。
+- 訂單摘要顯示 `Sauce Labs Backpack`。
+- 訂單摘要顯示 `Sauce Labs Bike Light`。
+- 訂單摘要商品數量為 2。
+- Item total 為 `$39.98`。
+- Tax 為 `$3.20`。
+- Total 為 `$43.18`。
+- 使用者成功導向 `/checkout-complete.html`。
+- 頁面顯示 `Thank you for your order!`。
+
+#### 自動化腳本
+
+```text
+tests/checkout.spec.ts
+```
 
 ## 6.3 Cart 測試案例
 
@@ -900,10 +1244,10 @@ npx playwright show-report playwright-report
 
 | 執行日期 | 瀏覽器 | 測試範圍 | 通過 | 失敗 | 跳過 | Flaky | 備註 |
 |---|---|---|---:|---:|---:|---:|---|
-| 2026-08-15 | Chromium | All tests | 23 | 0 | 0 | 0 | workers=2，已完成 |
-| 2026-08-15 | Firefox | All tests | 23 | 0 | 0 | 0 | workers=2，已完成 |
-| 2026-08-15 | WebKit | All tests | 23 | 0 | 0 | 0 | workers=2，已完成 |
-| 2026-08-15 | All browsers | All tests | 69 | 0 | 0 | 0 | workers=2，已完成 |
+| 2026-08-15 | Chromium | All tests | 24 | 0 | 0 | 0 | workers=2，已完成 |
+| 2026-08-15 | Firefox | All tests | 24 | 0 | 0 | 1 | workers=2，1 個測試經 retry 後通過 |
+| 2026-08-15 | WebKit | All tests | 24 | 0 | 0 | 0 | workers=2，已完成 |
+| 2026-08-15 | All browsers | All tests | 72 | 0 | 0 | 1 | workers=2，全部最終通過 |
 
 ## 9. 風險與後續規劃
 
@@ -916,6 +1260,7 @@ npx playwright show-report playwright-report
 - 完成結帳流程與結帳資料必填欄位驗證。
 - 完成訂單摘要商品、數量、小計、稅額與總金額驗證。
 - 完成結帳取消流程驗證。
+- 完成多商品結帳流程。
 - 完成訂單完成頁與 Back Home 導航驗證。
 - 啟用 Chromium、Firefox 與 WebKit 跨瀏覽器測試。
 - 建立 GitHub Actions CI。
@@ -932,7 +1277,6 @@ npx playwright show-report playwright-report
 ### 後續規劃
 
 - 分析 `performance_glitch_user` 的頁面載入與登入等待時間。
-- 補充多商品結帳流程。
 - 補充 API 自動化測試。
 - 補充 SQL 資料驗證。
 - 整合 CI/CD 測試報告與部署流程。

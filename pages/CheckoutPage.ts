@@ -124,4 +124,29 @@ async expectOrderCompletePage() {
 async backHome() {
   await this.backHomeButton.click();
 }
+
+async expectOverviewProducts(productNames: string[]) {
+  await expect(this.page).toHaveURL(/checkout-step-two.html/);
+  await expect(this.page.locator('.cart_item')).toHaveCount(
+    productNames.length,
+  );
+
+  for (const productName of productNames) {
+    await expect(
+      this.page.locator('.cart_item').filter({
+        has: this.page.getByText(productName, { exact: true }),
+      }),
+    ).toBeVisible();
+  }
+}
+
+async expectOverviewAmounts(
+  subtotal: string,
+  tax: string,
+  total: string,
+) {
+  await expect(this.itemTotal).toHaveText(`Item total: ${subtotal}`);
+  await expect(this.tax).toHaveText(`Tax: ${tax}`);
+  await expect(this.total).toHaveText(`Total: ${total}`);
+}
 }
